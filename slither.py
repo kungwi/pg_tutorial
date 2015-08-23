@@ -9,8 +9,8 @@ black = (  0,  0,  0)
 red   = (255,  0,  0)
 green = (  0,155,  0)
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 600
+HEIGHT = 400
 
 clock = pygame.time.Clock()
 FPS = 100
@@ -19,13 +19,14 @@ gameDisplay = pygame.display.set_mode((WIDTH,HEIGHT))
 pygame.display.set_caption('Slither')
 icon = pygame.image.load("apple_or.png")
 pygame.display.set_icon(icon)
+back = pygame.image.load("Photo.png")
 
 head_img = pygame.image.load('head.png')
 apple_img = pygame.image.load('apple.png')
 
 direction = "right"
 
-pygame.display.update()
+
 
 smallfont = pygame.font.SysFont("comicsansms" , 25)
 medfont = pygame.font.SysFont("comicsansms" , 50)
@@ -50,6 +51,7 @@ def game_intro():
 		
 		
 		gameDisplay.fill(white)
+		gameDisplay.blit(back, (0, 0))
 		message_to_screen("Welcome to Snake", green, -100 , "large")
 		message_to_screen("press c to play or q to quit",black,0,"small")
 		pygame.display.update()
