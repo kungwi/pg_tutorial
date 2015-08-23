@@ -6,6 +6,7 @@ x = pygame.init()
 white = (255,255,255)
 black = (  0,  0,  0)
 red   = (255,  0,  0)
+green = (  0,155,  0)
 
 WIDTH = 800
 HEIGHT = 600
@@ -17,9 +18,30 @@ pygame.display.update()
 
 font = pygame.font.SysFont(None , 25)
 
+def snake(block_size, snakelist):
+	for XnY in snakelist:
+		pygame.draw.rect(gameDisplay,green,(XnY[0],XnY[1],block_size,block_size))
+
+def rectangle_colision(sx,sy,ax,ay,sz):
+	if sx > ax + sz :
+		return False
+	if sy > ay + sz :
+		return False
+	if sx + sz < ax :
+		return False
+	if sy + sz < ay :
+		return False
+
+	return True
+
+def text_objects(text,color):
+	textSurface = font.render(text, True, color)
+	return textSurface, textSurface.get_rect()
+
 def message_to_screen(msg , color):
-	screen_text = font.render(msg, True , color)
-	gameDisplay.blit(screen_text,(WIDTH/2,HEIGHT/2))
+	textSurf, textRect = text_objects(msg,color)
+	textRect.center = (WIDTH/2) , (HEIGHT/2)
+	gameDisplay.blit(textSurf,textRect)
 
 def gameloop():
 	block_size = 10
@@ -30,6 +52,9 @@ def gameloop():
 
 	gameExit = False
 	gameOver = False
+
+	snakeList = []
+	snakeLength = 1
 	
 	clock = pygame.time.Clock()
 	FPS = 100
@@ -81,11 +106,28 @@ def gameloop():
 
 		if lead_x >= WIDTH-block_size or lead_x < 0 or lead_y < 0 or lead_y >= HEIGHT-block_size:		
 			gameOver = True
+		for eachSegment in snakeList[:-20]:
+			if rectangle_colision(lead_x,lead_y,eachSegment[0],eachSegment[1],block_size):
+				gameOver = True
+
 
 		gameDisplay.fill(white)
 		pygame.draw.rect(gameDisplay,red,(randAppleX,randAppleY,block_size,block_size))
-		pygame.draw.rect(gameDisplay,black,(lead_x,lead_y,block_size,block_size))
+
+		snakeHead = []
+		snakeHead.append(lead_x)
+		snakeHead.append(lead_y)
+		snakeList.append(snakeHead)
+		if len(snakeList) > snakeLength:
+			del snakeList[0]
+
+		snake(block_size,snakeList)
 		pygame.display.update()
+
+		if rectangle_colision(lead_x,lead_y,randAppleX,randAppleY,block_size) :
+			randAppleX = random.randrange(1,WIDTH - block_size - 1)
+			randAppleY = random.randrange(1,HEIGHT - block_size - 1)
+			snakeLength += 6
 
 		clock.tick(FPS)
 
